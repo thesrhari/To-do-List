@@ -11,7 +11,10 @@ function ToDoList() {
 
   function addTask() {
     if (newTask.trim() !== "") {
-      setTasks((prevTasks) => [...prevTasks, newTask]);
+      setTasks((prevTasks) => [
+        ...prevTasks,
+        { text: newTask, checked: false },
+      ]);
       setNewTask("");
     }
   }
@@ -21,8 +24,12 @@ function ToDoList() {
     setTasks(updatedTasks);
   }
 
-  function checkTask(event) {
-    event.target.nextElementSibling.classList.toggle("completed-task");
+  function checkTask(index) {
+    setTasks((prevTasks) =>
+      prevTasks.map((task, i) =>
+        i === index ? { ...task, checked: !task.checked } : task
+      )
+    );
   }
 
   return (
@@ -48,9 +55,12 @@ function ToDoList() {
               <input
                 type="checkbox"
                 className="checkbox"
-                onChange={checkTask}
+                checked={task.checked}
+                onChange={() => checkTask(index)}
               />
-              <span className="text">{task}</span>
+              <span className={`text ${task.checked ? "completed-task" : ""}`}>
+                {task.text}
+              </span>
               <button className="delete-btn" onClick={() => deleteTask(index)}>
                 Delete
               </button>
